@@ -136,6 +136,14 @@ class RecipeService:
             for category in recipe.get("ingredients", {}).keys():
                 ingredients[category] = self.resolve_category(category)
             
+            # Calculate total combinations
+            combinations = 1
+            for items in ingredients.values():
+                if items:
+                    combinations *= len(items)
+                else:
+                    combinations = 0
+
             recipes_with_ingredients[name] = {
                 "id": recipe.get("id", ""),
                 "name": name,
@@ -144,6 +152,7 @@ class RecipeService:
                 "results": [name],
                 "base_time": recipe.get("base_time", 0),
                 "base_weight": recipe.get("base_weight", 0.0),
+                "combinations": combinations,
                 "priority": recipe.get("priority", 0)
             }
         
@@ -169,6 +178,13 @@ class RecipeService:
             if can_make:
                 recipe_copy = recipe.copy()
                 recipe_copy["ingredients"] = filtered_ingredients
+                
+                # Recalculate combinations for shop-only version
+                combinations = 1
+                for items in filtered_ingredients.values():
+                    combinations *= len(items)
+                recipe_copy["combinations"] = combinations
+                
                 shop_recipes[name] = recipe_copy
         
         return shop_recipes
