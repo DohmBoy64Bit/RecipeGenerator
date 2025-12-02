@@ -110,6 +110,13 @@ function generateRecipe() {
         ? `<img src="${imageSrc}" alt="${recipe.name}" class="w-full h-full object-cover">`
         : `<span class="text-4xl">🍲</span>`;
 
+    const formatTime = (seconds) => {
+        if (seconds < 60) return `${seconds}s`;
+        const minutes = Math.floor(seconds / 60);
+        const remaining = seconds % 60;
+        return remaining > 0 ? `${minutes}m ${remaining}s` : `${minutes}m`;
+    };
+
     container.innerHTML = `
         <div class="glass-card rounded-2xl p-8 border-t-4 border-t-emerald-500 shadow-2xl shadow-emerald-900/20">
             <div class="flex items-start justify-between mb-6">
@@ -119,12 +126,15 @@ function generateRecipe() {
                     </div>
                     <div>
                         <h3 class="text-3xl font-bold text-white">${recipe.name}</h3>
-                        <div class="text-sm text-gray-500 flex gap-4 mt-1">
-                            <span class="flex items-center gap-1">
+                        <div class="text-sm flex gap-3 mt-2">
+                            <div class="px-3 py-1 rounded-full glass-card border border-emerald-500/30 text-emerald-400 flex items-center gap-2">
                                 <img src="/static/img/emojis/cartoon_time.webp" alt="Time" class="w-5 h-5 object-contain">
-                                ${recipe.base_time}s
-                            </span>
-                            <span class="flex items-center gap-1">🔀 ${recipe.combinations.toLocaleString()} Combos</span>
+                                <span class="font-bold text-white">${formatTime(recipe.base_time)}</span>
+                            </div>
+                            <div class="px-3 py-1 rounded-full glass-card border border-emerald-500/30 text-emerald-400 flex items-center gap-2">
+                                <img src="/static/img/emojis/cartoon_combo.webp" alt="Combos" class="w-5 h-5 object-contain">
+                                <span class="font-bold text-white">${recipe.combinations.toLocaleString()}</span> Combos
+                            </div>
                         </div>
                     </div>
                 </div>
