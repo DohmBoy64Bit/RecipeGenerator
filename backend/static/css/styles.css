@@ -47,6 +47,34 @@ select option {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translate(-50%, 5px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
+    from {
+        opacity: 0;
+        transform: translate(-50%, 5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* Bottom Tooltip Modifier */
+.tooltip-trigger.tooltip-bottom:hover::after {
+    bottom: auto;
+    top: 100%;
+    margin-bottom: 0;
+    margin-top: 0.5rem;
+    animation: fadeInBottom 0.2s ease-in-out;
+}
+
+@keyframes fadeInBottom {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
 }
