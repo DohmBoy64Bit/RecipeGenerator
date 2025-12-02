@@ -1,7 +1,10 @@
 from backend.services.recipe_service import RecipeService
 
+from pathlib import Path
+
 # Global instance
-_recipe_service = RecipeService("e:/RecipeGenerator/data")
+BASE_DIR = Path(__file__).resolve().parent.parent
+_recipe_service = RecipeService(str(BASE_DIR / "data"))
 
 def load_global_data():
     """Load data on startup."""

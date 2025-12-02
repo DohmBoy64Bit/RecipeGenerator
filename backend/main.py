@@ -21,8 +21,12 @@ app.include_router(stats.router)
 app.include_router(items.router)
 app.include_router(views.router)
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+
 # Serve Static Files
-app.mount("/static", StaticFiles(directory="e:/RecipeGenerator/backend/static"), name="static")
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 @app.on_event("startup")
 async def startup_event():

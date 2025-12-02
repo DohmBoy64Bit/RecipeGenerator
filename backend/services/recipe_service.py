@@ -9,8 +9,11 @@ from typing import Dict, List, Optional
 logger = logging.getLogger(__name__)
 
 class RecipeService:
-    def __init__(self, data_dir: str = "e:/RecipeGenerator/data"):
-        self.data_dir = Path(data_dir)
+    def __init__(self, data_dir: str = None):
+        if data_dir:
+            self.data_dir = Path(data_dir)
+        else:
+            self.data_dir = Path(__file__).resolve().parent.parent.parent / "data"
         self.recipes_data: Dict = {}
         self.cooking_data: Dict = {}
         self.traits_data: Dict = {}
