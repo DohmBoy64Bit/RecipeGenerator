@@ -144,12 +144,22 @@ class RecipeService:
                 else:
                     combinations = 0
 
+            # Format display name
+            display_names = {
+                "CandyApple": "Candy Apple",
+                "HotDog": "Hot Dog",
+                "IceCream": "Ice Cream",
+                "SweetTea": "Sweet Tea",
+                "Corndog": "Corn Dog"
+            }
+            display_name = display_names.get(name, name)
+
             recipes_with_ingredients[name] = {
                 "id": recipe.get("id", ""),
-                "name": name,
+                "name": display_name,
                 "image_id": recipe.get("image_id", ""),
                 "ingredients": ingredients,
-                "results": [name],
+                "results": [display_name],
                 "base_time": recipe.get("base_time", 0),
                 "base_weight": recipe.get("base_weight", 0.0),
                 "combinations": combinations,

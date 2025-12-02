@@ -86,8 +86,8 @@ function generateRecipe() {
     const IMAGE_MAP = {
         "Burger": "food_burger.webp",
         "Soup": "food_soup.png",
-        "Corndog": "food_corn_dog.webp",
-        "HotDog": "food_hot_dog.webp",
+        "Corn Dog": "food_corn_dog.webp",
+        "Hot Dog": "food_hot_dog.webp",
         "Sandwich": "food_sandwich.webp",
         "Salad": "food_salad.webp",
         "Pie": "food_pie.webp",
@@ -95,13 +95,13 @@ function generateRecipe() {
         "Pizza": "food_pizza.webp",
         "Sushi": "food_sushi.webp",
         "Donut": "food_donut.webp",
-        "IceCream": "food_ice_cream.webp",
+        "Ice Cream": "food_ice_cream.webp",
         "Cake": "food_cake.webp",
         "Smoothie": "food_smoothie.webp",
         "Porridge": "food_porridge.webp",
         "Spaghetti": "food_spaghetti.webp",
-        "CandyApple": "food_candy_apple.webp",
-        "SweetTea": "food_sweet_tea.webp"
+        "Candy Apple": "food_candy_apple.webp",
+        "Sweet Tea": "food_sweet_tea.webp"
     };
 
     const imageFile = IMAGE_MAP[recipe.name] || "";
