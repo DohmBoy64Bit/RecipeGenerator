@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grow a Garden Recipes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        glass: 'rgba(255, 255, 255, 0.05)',
+                        glassBorder: 'rgba(255, 255, 255, 0.1)',
+                        accent: '#10B981', // Emerald 500
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: radial-gradient(circle at top left, #1a202c, #000000);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-header {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        select option {
+            background: #1f2937;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="text-gray-200 font-sans antialiased selection:bg-accent selection:text-white">
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 glass-header transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+                    RecipeGen</h1>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <!-- Stats -->
+                <div id="stats-container" class="hidden md:flex gap-4 text-sm font-medium text-gray-400">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Filter Toggle -->
+                <label class="flex items-center cursor-pointer group">
+                    <div class="relative">
+                        <input type="checkbox" id="shop-filter" class="sr-only" onchange="fetchRecipes()">
+                        <div
+                            class="w-14 h-8 bg-gray-700 rounded-full shadow-inner transition-colors duration-300 group-hover:bg-gray-600 peer-checked:bg-emerald-500">
+                        </div>
+                        <div
+                            class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full shadow transition-transform duration-300 transform peer-checked:translate-x-6">
+                        </div>
+                    </div>
+                    <span class="ml-3 text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Shop
+                        Seeds Only</span>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto flex flex-col items-center">
+
+        <h2
+            class="text-3xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500">
+            Generate a Recipe</h2>
+
+        <!-- Selection Area -->
+        <div class="w-full glass-card rounded-2xl p-8 mb-8">
+            <label for="recipe-select" class="block text-sm font-medium text-gray-400 mb-2">Select a Food Item</label>
+            <div class="relative">
+                <select id="recipe-select"
+                    class="block w-full pl-4 pr-10 py-3 text-base border-gray-700 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-xl bg-gray-800/50 text-white appearance-none transition-all duration-200 hover:bg-gray-800">
+                    <option value="" disabled selected>Choose a recipe...</option>
+                    <!-- Options populated by JS -->
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                        aria-hidden="true">
+                        <path fill-rule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+
+            <button onclick="generateRecipe()"
+                class="mt-6 w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-500/30 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">
+                Generate Recipe
+            </button>
+        </div>
+
+        <!-- Result Card -->
+        <div id="result-container" class="w-full opacity-0 transition-all duration-500 transform translate-y-4">
+            <!-- Populated by JS -->
+        </div>
+
+    </main>
+
+    <script>
+        const API_URL = 'http://localhost:8000/api';
+        let allRecipes = [];
+
+        async function fetchStats() {
+            try {
+                const res = await fetch(`${API_URL}/stats`);
+                const data = await res.json();
+                const container = document.getElementById('stats-container');
+                container.innerHTML = `
+                    <div class="px-3 py-1 rounded-full glass-card border-emerald-500/30 text-emerald-400">
+                        <span class="font-bold text-white">${data.shop_only_recipes}</span> Shop Recipes
+                    </div>
+                    <div class="px-3 py-1 rounded-full glass-card">
+                        <span class="font-bold text-white">${data.total_recipes}</span> Total
+                    </div>
+                `;
+            } catch (e) {
+                console.error("Failed to fetch stats", e);
+            }
+        }
+
+        async function fetchRecipes() {
+            const shopOnly = document.getElementById('shop-filter').checked;
+            const select = document.getElementById('recipe-select');
+
+            // Clear current selection
+            select.innerHTML = '<option value="" disabled selected>Loading...</option>';
+            document.getElementById('result-container').classList.add('opacity-0', 'translate-y-4');
+
+            try {
+                const res = await fetch(`${API_URL}/recipes?shop_only=${shopOnly}`);
+                allRecipes = await res.json();
+
+                // Sort alphabetically
+                allRecipes.sort((a, b) => a.name.localeCompare(b.name));
+
+                // Populate Dropdown
+                select.innerHTML = '<option value="" disabled selected>Choose a recipe...</option>';
+                if (allRecipes.length === 0) {
+                    const option = document.createElement('option');
+                    option.disabled = true;
+                    option.text = "No recipes found matching criteria";
+                    select.add(option);
+                } else {
+                    allRecipes.forEach(recipe => {
+                        const option = document.createElement('option');
+                        option.value = recipe.name;
+                        option.text = recipe.name;
+                        select.add(option);
+                    });
+                }
+
+                fetchStats(); // Refresh stats too
+            } catch (e) {
+                console.error("Failed to fetch recipes", e);
+                select.innerHTML = '<option value="" disabled selected>Error loading recipes</option>';
+            }
+        }
+
+        function generateRecipe() {
+            const select = document.getElementById('recipe-select');
+            const selectedName = select.value;
+            const container = document.getElementById('result-container');
+
+            if (!selectedName) return;
+
+            const recipe = allRecipes.find(r => r.name === selectedName);
+            if (!recipe) return;
+
+            // Render Card
+            let ingredientsHtml = '';
+            for (const [name, items] of Object.entries(recipe.ingredients)) {
+                // Ensure items is an array
+                const itemList = Array.isArray(items) ? items : [];
+
+                ingredientsHtml += `
+                    <div class="mb-4 last:mb-0">
+                        <div class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            ${name}
+                        </div>
+                        <div class="text-sm text-gray-300 bg-black/20 rounded-xl p-3 border border-white/5">
+                            ${itemList.length > 0 ? itemList.map(i => `<span class="inline-block bg-white/5 rounded-lg px-2 py-1 text-xs mr-1 mb-1 border border-white/5 hover:bg-white/10 transition-colors cursor-default">${i}</span>`).join('') : '<span class="text-red-400 italic">No items available</span>'}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="glass-card rounded-2xl p-8 border-t-4 border-t-emerald-500 shadow-2xl shadow-emerald-900/20">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-2xl bg-gray-800 border border-gray-700 flex items-center justify-center overflow-hidden shadow-inner">
+                                <span class="text-4xl">🍲</span>
+                            </div>
+                            <div>
+                                <h3 class="text-3xl font-bold text-white">${recipe.name}</h3>
+                                <div class="text-sm text-gray-500 flex gap-4 mt-1">
+                                    <span class="flex items-center gap-1">⏱️ ${recipe.base_time}s</span>
+                                    <span class="flex items-center gap-1">⚖️ ${recipe.base_weight}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2 bg-gray-800/30 rounded-xl p-6 border border-white/5">
+                        ${ingredientsHtml}
+                    </div>
+                </div>
+            `;
+
+            // Animate in
+            container.classList.remove('opacity-0', 'translate-y-4');
+        }
+
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchRecipes();
+            fetchStats();
+
+            // Add toggle animation logic
+            const checkbox = document.getElementById('shop-filter');
+            const dot = document.querySelector('.dot');
+            checkbox.addEventListener('change', function () {
+                if (this.checked) {
+                    dot.classList.add('translate-x-6');
+                } else {
+                    dot.classList.remove('translate-x-6');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
