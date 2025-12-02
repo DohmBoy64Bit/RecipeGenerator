@@ -133,11 +133,11 @@ function generateRecipe() {
                     <div>
                         <h3 class="text-3xl font-bold text-white">${recipe.name}</h3>
                         <div class="text-sm flex gap-3 mt-2">
-                            <div class="px-3 py-1 rounded-full glass-card border border-emerald-500/30 text-emerald-400 flex items-center gap-2">
+                            <div class="px-3 py-1 rounded-full glass-card border border-emerald-500/30 text-emerald-400 flex items-center gap-2 tooltip-trigger" data-tooltip="Base time required to grow this recipe">
                                 <img src="/static/img/emojis/cartoon_time.webp" alt="Time" class="w-5 h-5 object-contain">
                                 <span class="font-bold text-white">${formatTime(recipe.base_time)}</span>
                             </div>
-                            <div class="px-3 py-1 rounded-full glass-card border border-emerald-500/30 text-emerald-400 flex items-center gap-2">
+                            <div class="px-3 py-1 rounded-full glass-card border border-emerald-500/30 text-emerald-400 flex items-center gap-2 tooltip-trigger" data-tooltip="Total possible ingredient combinations for this recipe">
                                 <img src="/static/img/emojis/cartoon_combo.webp" alt="Combos" class="w-5 h-5 object-contain">
                                 <span class="font-bold text-white">${recipe.combinations.toLocaleString()}</span> Combos
                             </div>
