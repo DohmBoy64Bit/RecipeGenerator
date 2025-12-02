@@ -120,7 +120,10 @@ function generateRecipe() {
                     <div>
                         <h3 class="text-3xl font-bold text-white">${recipe.name}</h3>
                         <div class="text-sm text-gray-500 flex gap-4 mt-1">
-                            <span class="flex items-center gap-1">⏱️ ${recipe.base_time}s</span>
+                            <span class="flex items-center gap-1">
+                                <img src="/static/img/emojis/cartoon_time.webp" alt="Time" class="w-5 h-5 object-contain">
+                                ${recipe.base_time}s
+                            </span>
                             <span class="flex items-center gap-1">🔀 ${recipe.combinations.toLocaleString()} Combos</span>
                         </div>
                     </div>
