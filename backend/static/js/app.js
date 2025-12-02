@@ -83,12 +83,39 @@ function generateRecipe() {
         `;
     }
 
+    const IMAGE_MAP = {
+        "Burger": "food_burger.webp",
+        "Soup": "food_soup.png",
+        "Corndog": "food_corn_dog.webp",
+        "HotDog": "food_hot_dog.webp",
+        "Sandwich": "food_sandwich.webp",
+        "Salad": "food_salad.webp",
+        "Pie": "food_pie.webp",
+        "Waffle": "food_waffle.webp",
+        "Pizza": "food_pizza.webp",
+        "Sushi": "food_sushi.webp",
+        "Donut": "food_donut.webp",
+        "IceCream": "food_ice_cream.webp",
+        "Cake": "food_cake.webp",
+        "Smoothie": "food_smoothie.webp",
+        "Porridge": "food_porridge.webp",
+        "Spaghetti": "food_spaghetti.webp",
+        "CandyApple": "food_candy_apple.webp",
+        "SweetTea": "food_sweet_tea.webp"
+    };
+
+    const imageFile = IMAGE_MAP[recipe.name] || "";
+    const imageSrc = imageFile ? `/static/img/foods/${imageFile}` : "";
+    const imageHtml = imageSrc
+        ? `<img src="${imageSrc}" alt="${recipe.name}" class="w-full h-full object-cover">`
+        : `<span class="text-4xl">🍲</span>`;
+
     container.innerHTML = `
         <div class="glass-card rounded-2xl p-8 border-t-4 border-t-emerald-500 shadow-2xl shadow-emerald-900/20">
             <div class="flex items-start justify-between mb-6">
                 <div class="flex items-center gap-4">
                     <div class="w-16 h-16 rounded-2xl bg-gray-800 border border-gray-700 flex items-center justify-center overflow-hidden shadow-inner">
-                        <span class="text-4xl">🍲</span>
+                        ${imageHtml}
                     </div>
                     <div>
                         <h3 class="text-3xl font-bold text-white">${recipe.name}</h3>

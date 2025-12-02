@@ -22,7 +22,7 @@ app.include_router(items.router)
 app.include_router(views.router)
 
 # Serve Static Files
-app.mount("/static", StaticFiles(directory="e:/RecipeGenerator/backend/templates"), name="static")
+app.mount("/static", StaticFiles(directory="e:/RecipeGenerator/backend/static"), name="static")
 
 @app.on_event("startup")
 async def startup_event():
