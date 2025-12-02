@@ -162,8 +162,17 @@ class LuaConverter:
             if match:
                 var_name = match.group(1)
                 
-                if line.strip().endswith('{}'):
-                    self.lua_vars[var_name] = {}
+                # Check for single-line table definition
+                if line.strip().endswith('}'):
+                    val_part = line.split('=', 1)[1].strip()
+                    val = self._resolve_value(val_part)
+                    self.lua_vars[var_name] = val
+                    
+                    # If this is a cooking category variable, save it
+                    if var_name in var_to_category and isinstance(val, list):
+                        category_name = var_to_category[var_name]
+                        self.cooking_categories[category_name] = val
+                        
                     i += 1
                     continue
                 

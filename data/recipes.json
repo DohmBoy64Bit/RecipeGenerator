@@ -1,4 +1,18 @@
 {
+  "Burger": {
+    "id": "c",
+    "image_id": "rbxassetid://100029889334054",
+    "ingredients": {
+      "Bread": 1,
+      "Meat": 1,
+      "Leafy": 1
+    },
+    "count": 3,
+    "priority": 10,
+    "base_time": 400,
+    "base_weight": 2.0,
+    "description": "Requires 3 ingredients"
+  },
   "Soup": {
     "id": "d",
     "image_id": "rbxassetid://122580735203073",
