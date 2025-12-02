@@ -1,7 +1,6 @@
 import json
 import re
-import os
-from typing import Dict, List, Set, Any, Tuple, Union
+from typing import Dict, List, Any, Tuple
 from pathlib import Path
 
 class LuaConverter:
@@ -9,20 +8,24 @@ class LuaConverter:
         self.data_dir = Path(data_dir)
         self.traits_file = self.data_dir / "plant_traits.json"
         self.lua_file = self.data_dir / "FoodRecipeData.lua"
-        self.output_file = self.data_dir / "recipes.json"
+        self.recipes_output = self.data_dir / "recipes.json"
+        self.cooking_output = self.data_dir / "cooking.json"
         
         self.traits: Dict[str, List[str]] = {}
         self.items_by_trait: Dict[str, List[str]] = {}
         self.lua_vars: Dict[str, Any] = {}
         self.recipes: Dict[str, Any] = {}
+        self.cooking_categories: Dict[str, List[str]] = {}
         
     def convert(self):
         print("Loading traits...")
         self._load_traits()
         print("Parsing Lua...")
         self._parse_lua_file()
-        print(f"Saving {len(self.recipes)} recipes to {self.output_file}...")
-        self._save_json()
+        print(f"Saving {len(self.recipes)} recipes to {self.recipes_output}...")
+        self._save_recipes()
+        print(f"Saving {len(self.cooking_categories)} cooking categories to {self.cooking_output}...")
+        self._save_cooking()
         print("Done.")
 
     def _load_traits(self):
@@ -54,6 +57,7 @@ class LuaConverter:
         except ValueError:
             pass
         
+        # Check if it's a variable reference
         if val_str in self.lua_vars:
             return self.lua_vars[val_str]
         
@@ -87,8 +91,8 @@ class LuaConverter:
             content = line.split('v3:SetSubtract(')[1].split(')')[0]
             parts = [p.strip() for p in content.split(',')]
             if len(parts) >= 2:
-                set1 = set(self._resolve_value(parts[0]))
-                set2 = set(self._resolve_value(parts[1]))
+                set1 = set(self._resolve_value(parts[0]) if isinstance(self._resolve_value(parts[0]), list) else [])
+                set2 = set(self._resolve_value(parts[1]) if isinstance(self._resolve_value(parts[1]), list) else [])
                 return list(set1 - set2)
         
         return []
@@ -125,12 +129,6 @@ class LuaConverter:
             elif line.startswith('"'):
                 val = line.strip('", ')
                 data_list.append(val)
-            
-            # Value (variable reference or number in list)
-            elif not line.startswith('[') and not line.startswith('local'):
-                 # Heuristic for list items that aren't strings
-                 val = self._resolve_value(line)
-                 data_list.append(val)
 
             i += 1
             
@@ -141,6 +139,15 @@ class LuaConverter:
             lines = f.readlines()
 
         local_list_start = re.compile(r'local (v\d+) = \{')
+        
+        # Map variable names to cooking category names
+        var_to_category = {
+            'v5': 'Bread',
+            'v6': 'Meat', 
+            'v7': 'Leafy',
+            'v8': 'Pastry',
+            'v9': 'Tomato'
+        }
         
         i = 0
         while i < len(lines):
@@ -163,6 +170,11 @@ class LuaConverter:
                 # Parse table starting from next line
                 val, i = self._parse_table(lines, i + 1)
                 self.lua_vars[var_name] = val
+                
+                # If this is a cooking category variable, save it
+                if var_name in var_to_category and isinstance(val, list):
+                    category_name = var_to_category[var_name]
+                    self.cooking_categories[category_name] = val
             
             # vX.Prop = Val
             prop_assign = re.match(r'(v\d+)\.(\w+) = (.+)', line)
@@ -189,37 +201,54 @@ class LuaConverter:
                 if var_ref in self.lua_vars:
                     recipe_data = self.lua_vars[var_ref]
                     
-                    # Clean up ingredients
+                    # Extract ingredient requirements with counts
                     ingredients = {}
-                    if 'Requires' in recipe_data and 'Ingredients' in recipe_data['Requires']:
-                        raw_ingredients = recipe_data['Requires']['Ingredients']
-                        for key, val in raw_ingredients.items():
-                            if isinstance(val, list):
-                                ingredients[key] = val
-                            elif isinstance(val, str):
-                                if val in self.lua_vars:
-                                    ingredients[key] = self.lua_vars[val]
-                                else:
-                                    ingredients[key] = [val]
-                            else:
-                                ingredients[key] = []
+                    if 'Requires' in recipe_data:
+                        requires = recipe_data['Requires']
+                        count = requires.get('Count', 0)
+                        
+                        if 'Ingredients' in requires:
+                            # Store just the category names, not the actual items
+                            # RecipeService will resolve these at runtime
+                            for category in requires['Ingredients'].keys():
+                                ingredients[category] = 1  # Each category needs 1 item
+                        elif count == 1:
+                            # Special case for Soup - accepts any single ingredient
+                            ingredients['Any'] = 1
 
                     self.recipes[recipe_name] = {
                         "id": recipe_data.get('Id', ''),
-                        "name": recipe_name,
                         "image_id": recipe_data.get('ImageId', ''),
                         "ingredients": ingredients,
-                        "results": recipe_data.get('Results', [recipe_name]),
+                        "count": recipe_data.get('Requires', {}).get('Count', 0),
+                        "priority": recipe_data.get('Priority', 0),
                         "base_time": recipe_data.get('BaseTime', 0),
                         "base_weight": float(recipe_data.get('BaseWeight', 0)),
-                        "priority": recipe_data.get('Priority', 0)
+                        "description": f"Requires {recipe_data.get('Requires', {}).get('Count', 0)} ingredients"
                     }
 
             i += 1
 
-    def _save_json(self):
-        with open(self.output_file, 'w') as f:
+    def _save_recipes(self):
+        with open(self.recipes_output, 'w') as f:
             json.dump(self.recipes, f, indent=2)
+
+    def _save_cooking(self):
+        # Add additional categories that are derived or special
+        cooking_data = {
+            **self.cooking_categories,
+            "Bamboo": ["Bamboo"],
+            "Wrap": self.cooking_categories.get("Leafy", []),
+            "Rice": self.cooking_categories.get("Bread", []) + ["Coconut"],
+            "Apple": ["Apple", "Green Apple", "Sugar Apple", "Maple Apple"],
+            "Batter": ["Corn", "Violet Corn"],
+            "Pasta": self.cooking_categories.get("Bread", []),
+            "Vegetables": [],  # Will be resolved from traits
+            "Main": []  # Will be resolved from Meat + Vegetables
+        }
+        
+        with open(self.cooking_output, 'w') as f:
+            json.dump(cooking_data, f, indent=2)
 
 if __name__ == "__main__":
     converter = LuaConverter("e:/RecipeGenerator/data")

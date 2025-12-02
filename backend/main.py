@@ -21,8 +21,7 @@ app.include_router(stats.router)
 app.include_router(items.router)
 app.include_router(views.router)
 
-# Serve Static Files (if needed for assets, though index.html is served by views)
-# We mount the templates dir as static too just in case, or for assets
+# Serve Static Files
 app.mount("/static", StaticFiles(directory="e:/RecipeGenerator/backend/templates"), name="static")
 
 @app.on_event("startup")

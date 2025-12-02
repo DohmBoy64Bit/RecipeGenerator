@@ -1,16 +1,11 @@
 from fastapi import APIRouter, Depends
-from backend.models import ItemStats, DataStore
-from backend.dependencies import get_data_store
-from backend.routers.recipes import is_recipe_possible
+from typing import Dict
+from backend.services.recipe_service import RecipeService
+from backend.dependencies import get_recipe_service
 
 router = APIRouter(prefix="/api/stats", tags=["stats"])
 
-@router.get("", response_model=ItemStats)
-async def get_stats(data_store: DataStore = Depends(get_data_store)):
-    total = len(data_store.recipes)
-    shop_only_count = 0
-    for recipe in data_store.recipes.values():
-        if is_recipe_possible(recipe, data_store.shop_seeds):
-            shop_only_count += 1
-            
-    return ItemStats(total_recipes=total, shop_only_recipes=shop_only_count)
+@router.get("", response_model=Dict)
+async def get_stats(service: RecipeService = Depends(get_recipe_service)):
+    """Get recipe statistics."""
+    return service.get_stats()

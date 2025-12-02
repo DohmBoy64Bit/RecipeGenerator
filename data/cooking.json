@@ -1,0 +1,84 @@
+{
+  "Bread": [
+    "Corn",
+    "Violet Corn",
+    "Cauliflower",
+    "Banana",
+    "Sugarglaze"
+  ],
+  "Meat": [
+    "Pepper",
+    "Bell Pepper",
+    "Ember Lily",
+    "Cactus",
+    "Mushroom",
+    "Eggplant",
+    "Venus Fly Trap",
+    "Glowshroom",
+    "Bone Blossom",
+    "Tall Asparagus",
+    "Taco Fern"
+  ],
+  "Leafy": [
+    "Tomato",
+    "Bamboo",
+    "Taro Flower",
+    "Sunflower",
+    "Avocado",
+    "Pineapple",
+    "Bell Pepper",
+    "Onion",
+    "Jalapeno",
+    "Grand Tomato",
+    "Artichoke"
+  ],
+  "Pastry": [
+    "Coconut",
+    "Pumpkin",
+    "Crown Melon",
+    "Sugarglaze"
+  ],
+  "Bamboo": [
+    "Bamboo"
+  ],
+  "Wrap": [
+    "Tomato",
+    "Bamboo",
+    "Taro Flower",
+    "Sunflower",
+    "Avocado",
+    "Pineapple",
+    "Bell Pepper",
+    "Onion",
+    "Jalapeno",
+    "Grand Tomato",
+    "Artichoke"
+  ],
+  "Rice": [
+    "Corn",
+    "Violet Corn",
+    "Cauliflower",
+    "Banana",
+    "Sugarglaze",
+    "Coconut"
+  ],
+  "Apple": [
+    "Apple",
+    "Green Apple",
+    "Sugar Apple",
+    "Maple Apple"
+  ],
+  "Batter": [
+    "Corn",
+    "Violet Corn"
+  ],
+  "Pasta": [
+    "Corn",
+    "Violet Corn",
+    "Cauliflower",
+    "Banana",
+    "Sugarglaze"
+  ],
+  "Vegetables": [],
+  "Main": []
+}
