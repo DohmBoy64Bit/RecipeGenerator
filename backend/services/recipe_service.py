@@ -207,9 +207,20 @@ class RecipeService:
         all_recipes = self.get_all_recipes()
         shop_recipes = self.get_shop_only_recipes()
         
+        # Get last modified time of recipes.json
+        from datetime import datetime
+        recipes_file = self.data_dir / "recipes.json"
+        last_updated = None
+        if recipes_file.exists():
+            mtime = recipes_file.stat().st_mtime
+            dt = datetime.fromtimestamp(mtime)
+            # Format as 12-hour time with month/day/year
+            last_updated = dt.strftime("%m/%d/%Y %I:%M:%S %p")
+        
         return {
             "total_recipes": len(all_recipes),
-            "shop_only_recipes": len(shop_recipes)
+            "shop_only_recipes": len(shop_recipes),
+            "last_updated": last_updated
         }
     
     def get_items(self) -> Dict:

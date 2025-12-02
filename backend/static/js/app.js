@@ -11,6 +11,12 @@ async function fetchStats() {
                 <span class="font-bold text-white">${data.shop_only_recipes}</span> Recipes
             </div>
         `;
+
+        // Update last updated timestamp in footer
+        if (data.last_updated) {
+            const lastUpdatedEl = document.getElementById('last-updated');
+            lastUpdatedEl.textContent = `Database last updated: ${data.last_updated}`;
+        }
     } catch (e) {
         console.error("Failed to fetch stats", e);
     }
