@@ -207,15 +207,27 @@ class RecipeService:
         all_recipes = self.get_all_recipes()
         shop_recipes = self.get_shop_only_recipes()
         
-        # Get last modified time of recipes.json
-        from datetime import datetime
-        recipes_file = self.data_dir / "recipes.json"
+        # Get last updated time from metadata.json
+        import json
+        metadata_file = self.data_dir / "metadata.json"
         last_updated = None
-        if recipes_file.exists():
-            mtime = recipes_file.stat().st_mtime
-            dt = datetime.fromtimestamp(mtime)
-            # Format as 12-hour time with month/day/year
-            last_updated = dt.strftime("%m/%d/%Y %I:%M:%S %p")
+        
+        if metadata_file.exists():
+            try:
+                with open(metadata_file, 'r') as f:
+                    data = json.load(f)
+                    last_updated = data.get("last_updated")
+            except Exception:
+                pass
+        
+        # Fallback to recipes.json mtime if metadata doesn't exist (for backward compatibility)
+        if not last_updated:
+            recipes_file = self.data_dir / "recipes.json"
+            if recipes_file.exists():
+                from datetime import datetime
+                mtime = recipes_file.stat().st_mtime
+                dt = datetime.fromtimestamp(mtime)
+                last_updated = dt.strftime("%m/%d/%Y %I:%M:%S %p")
         
         return {
             "total_recipes": len(all_recipes),
